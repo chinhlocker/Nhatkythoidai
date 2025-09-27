@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nhật Ký Thời Đại</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background-color: #ffffff;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            color: #333;
+            text-align: center;
+            font-size: 2.5em;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            gap: 20px;
+        }
+
+        .sidebar {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar h2 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .categories, .emotions {
+            margin-bottom: 20px;
+        }
+
+        .category-item, .emotion-item {
+            padding: 8px;
+            margin: 5px 0;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .category-item:hover, .emotion-item:hover {
+            background-color: #f0f0f0;
+        }
+
+        .editor-section {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .editor-toolbar {
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .toolbar-button {
+            padding: 8px;
+            margin: 0 5px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1.1em;
+            color: #555;
+        }
+
+        .toolbar-button:hover {
+            color: #000;
+        }
+
+        #editor {
+            width: 100%;
+            min-height: 400px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            resize: vertical;
+        }
+
+        .entry-details {
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .save-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            float: right;
+        }
+
+        .save-button:hover {
+            background-color: #45a049;
+        }
+
+        .status-bar {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            color: #666;
+        }
+
+        .login-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+        }
+
+        .login-button {
+            background-color: #4267B2;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+        }
+
+        .login-button:hover {
+            background-color: #365899;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Nhật Ký Thời Đại</h1>
+        <div class="login-container">
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="categories">
+                    <h2>Danh Mục</h2>
+                    <div class="category-item">
+                        <i class="fas fa-book"></i> Nhật ký hàng ngày
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-star"></i> Kỷ niệm đáng nhớ
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-heart"></i> Tình yêu
+                    </div>
+                    <div class="category-item">
+                        <i class="fas fa-plus"></i> Thêm danh mục mới
+                    </div>
+                </div>
+
+                <div class="emotions">
+                    <h2>Cảm Xúc</h2>
+                    <div class="emotion-item">😊 Hạnh phúc</div>
+                    <div class="emotion-item">😢 Buồn</div>
+                    <div class="emotion-item">😡 Giận dữ</div>
+                    <div class="emotion-item">😌 Bình yên</div>
+                </div>
+            </div>
+
+            <div class="editor-section">
+                <div class="editor-toolbar">
+                    <button class="toolbar-button"><i class="fas fa-bold"></i></button>
+                    <button class="toolbar-button"><i class="fas fa-italic"></i></button>
+                    <button class="toolbar-button"><i class="fas fa-underline"></i></button>
+                    <button class="toolbar-button"><i class="fas fa-list-ul"></i></button>
+                    <button class="toolbar-button"><i class="fas fa-image"></i></button>
+                    <button class="toolbar-button"><i class="fas fa-map-marker-alt"></i></button>
+                </div>
+
+                <textarea id="editor" placeholder="Hôm nay của bạn thế nào?"></textarea>
+
+                <div class="entry-details">
+                    <span>Số từ: 0</span>
+                    <span>Thời gian: 0 phút</span>
+                </div>
+
+                <button class="save-button">
+                    <i class="fas fa-save"></i> Lưu nhật ký
+                </button>
+
+                <div class="status-bar">
+                    <span>Chỉnh sửa lần cuối: 12/09/2025 15:30</span>
+                    <span><i class="fas fa-map-marker-alt"></i> Thêm địa điểm</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/javascript/post.js"></script>
+</body>
+</html>
