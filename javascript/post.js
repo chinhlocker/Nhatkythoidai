@@ -258,8 +258,27 @@ async function loadPost(postId, userId) {
             // Điền thông tin bài viết
             document.getElementById('postTitle').value = post.title || '';
             quill.setContents(JSON.parse(post.content));
-            document.getElementById('postCategory').value = post.category || 'daily';
             document.getElementById('isFavorite').checked = post.isFavor || false;
+            
+            // Chọn danh mục
+            if (post.category) {
+                const categoryElement = document.querySelector(`[data-category="${post.category}"]`);
+                if (categoryElement) {
+                    document.querySelectorAll('.category-item').forEach(i => i.classList.remove('selected'));
+                    categoryElement.classList.add('selected');
+                    selectedCategory = post.category;
+                }
+            }
+
+            // Chọn cảm xúc
+            if (post.emotion) {
+                const emotionElement = document.querySelector(`[data-emotion="${post.emotion}"]`);
+                if (emotionElement) {
+                    document.querySelectorAll('.emotion-item').forEach(i => i.classList.remove('selected'));
+                    emotionElement.classList.add('selected');
+                    selectedEmotion = post.emotion;
+                }
+            }
             
             // Cập nhật thời gian chỉnh sửa
             document.getElementById('lastEdit').textContent = 
@@ -278,7 +297,6 @@ document.getElementById('savePost').addEventListener('click', async () => {
 
     const title = document.getElementById('postTitle').value.trim();
     const content = JSON.stringify(quill.getContents());
-    const category = document.getElementById('postCategory').value;
     const isFavor = document.getElementById('isFavorite').checked;
 
     if (!title) {
@@ -291,6 +309,11 @@ document.getElementById('savePost').addEventListener('click', async () => {
         return;
     }
 
+    if (!selectedCategory) {
+        alert('Vui lòng chọn danh mục cho bài viết');
+        return;
+    }
+
     const postData = {
         title,
         content,
@@ -298,7 +321,8 @@ document.getElementById('savePost').addEventListener('click', async () => {
         emotion: selectedEmotion,
         isFavor,
         createdTime: Date.now(),
-        authorId: user.uid
+        authorId: user.uid,
+        wordCount: wordCount
     };
 
     try {

@@ -318,44 +318,18 @@
                     </button>
                 </div>
 
+                <div class="sidebar-section">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="isFavorite">
+                        <span><i class="fas fa-heart"></i> Đánh dấu yêu thích</span>
+                    </label>
+                </div>
+
                 <button class="save-button" id="savePost" style="width: 100%; margin-top: 20px;">
                     <i class="fas fa-save"></i> Lưu nhật ký
                 </button>
 
                 <div class="status-bar" style="margin-top: 10px;">
-                    <span id="lastEdit"></span>
-                </div>
-            </div>
-
-            <div class="editor-section">
-                <div class="form-group">
-                    <input type="text" id="postTitle" class="form-input" placeholder="Tiêu đề bài viết..." style="width: 100%; padding: 10px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px;">
-                </div>
-
-                <div id="editor" style="height: 400px; margin-bottom: 20px;"></div>
-
-                <div class="entry-details">
-                    <span id="wordCount">Số từ: 0</span>
-                    <span id="timeSpent">Thời gian: 0 phút</span>
-                    <label style="display: flex; align-items: center; gap: 5px;">
-                        <input type="checkbox" id="isFavorite">
-                        <span>Đánh dấu yêu thích</span>
-                    </label>
-                </div>
-
-                <div class="category-selection" style="margin: 20px 0;">
-                    <select id="postCategory" class="form-input" style="width: 200px; padding: 8px;">
-                        <option value="daily">Nhật ký hàng ngày</option>
-                        <option value="memory">Kỷ niệm đáng nhớ</option>
-                        <option value="love">Tình yêu</option>
-                    </select>
-                </div>
-
-                <button class="save-button" id="savePost">
-                    <i class="fas fa-save"></i> Lưu nhật ký
-                </button>
-
-                <div class="status-bar">
                     <span id="lastEdit"></span>
                 </div>
             </div>

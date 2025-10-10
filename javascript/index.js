@@ -147,18 +147,30 @@ function displayPosts(posts) {
         return;
     }
     
-    postsContainer.innerHTML = posts.map(post => `
+    postsContainer.innerHTML = posts.map(post => {
+        // Xử lý nội dung an toàn
+        let excerpt = '';
+        try {
+            const content = JSON.parse(post.content);
+            excerpt = content.ops ? content.ops[0].insert : '';
+            excerpt = excerpt.substring(0, 150) + (excerpt.length > 150 ? '...' : '');
+        } catch (e) {
+            excerpt = 'Không thể hiển thị nội dung';
+        }
+
+        return `
         <div class="post-card ${post.isFavor ? 'favorite' : ''}">
             <div class="post-content">
                 <div class="post-header">
                     <h3 class="post-title">${post.title || 'Không có tiêu đề'}</h3>
-                    ${post.isFavor ? '<i class="fas fa-star favorite-icon"></i>' : ''}
+                    ${post.isFavor ? '<i class="fas fa-heart favorite-icon"></i>' : ''}
                 </div>
-                <p class="post-excerpt">${JSON.parse(post.content).ops[0].insert.substring(0, 150)}${post.content.length > 150 ? '...' : ''}</p>
+                <p class="post-excerpt">${excerpt}</p>
                 <div class="post-meta">
                     <span><i class="fas fa-calendar"></i> ${new Date(post.createdTime).toLocaleString('vi-VN')}</span>
                     <span><i class="fas fa-folder"></i> ${getCategoryName(post.category)}</span>
                     ${post.emotion ? `<span class="post-emotion">${getEmotionEmoji(post.emotion)}</span>` : ''}
+                    <span><i class="fas fa-keyboard"></i> ${post.wordCount || 0} từ</span>
                 </div>
                 <div class="post-actions">
                     <button class="action-button edit-button" onclick="editPost('${post.id}')">
@@ -170,7 +182,7 @@ function displayPosts(posts) {
                 </div>
             </div>
         </div>
-    `).join('');
+    `}).join('');
 }
 
 // Hàm lấy tên danh mục
@@ -212,18 +224,24 @@ function editPost(postId) {
 }
 
 // Hàm xóa bài viết
-function deletePost(postId) {
+async function deletePost(postId) {
+    const user = auth.currentUser;
+    if (!user) {
+        alert('Vui lòng đăng nhập để thực hiện thao tác này');
+        return;
+    }
+
     if (confirm('Bạn có chắc chắn muốn xóa bài viết này không?')) {
-        const userId = localStorage.getItem('userId');
-        const postRef = ref(database, `posts/${userId}/${postId}`);
-        remove(postRef)
-            .then(() => {
-                alert('Đã xóa bài viết thành công');
-            })
-            .catch(error => {
-                console.error('Lỗi khi xóa bài viết:', error);
-                alert('Đã có lỗi xảy ra khi xóa bài viết');
-            });
+        try {
+            const postRef = ref(database, `posts/${user.uid}/${postId}`);
+            await remove(postRef);
+            alert('Đã xóa bài viết thành công');
+            // Tải lại danh sách bài viết
+            loadPosts(user.uid);
+        } catch (error) {
+            console.error('Lỗi khi xóa bài viết:', error);
+            alert('Đã có lỗi xảy ra khi xóa bài viết');
+        }
     }
 }
 
