@@ -204,25 +204,26 @@ document.getElementById('exitBtn').addEventListener('click', () => {
 
 // Khởi tạo Quill Editor
 function initQuillEditor() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .ql-editor.ql-blank::before {
+            padding-left: 15px;
+                }
+    `;
+    document.head.appendChild(style);
+
     quill = new Quill('#editor', {
         theme: 'snow',
         modules: {
             toolbar: [
-                ['bold', 'italic', 'underline', 'strike'],
-                ['blockquote', 'code-block'],
-                [{ 'header': 1 }, { 'header': 2 }],
+                ['bold', 'italic', 'underline'],
+                [{ 'header': [1, 2, 3, false] }],
                 [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                [{ 'script': 'sub'}, { 'script': 'super' }],
-                [{ 'indent': '-1'}, { 'indent': '+1' }],
-                [{ 'direction': 'rtl' }],
-                [{ 'size': ['small', false, 'large', 'huge'] }],
-                [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                [{ 'color': [] }, { 'background': [] }],
-                [{ 'font': [] }],
                 [{ 'align': [] }],
                 ['clean']
             ]
         },
+        formats: ['bold', 'italic', 'underline', 'header', 'list', 'align'],
         placeholder: 'Hôm nay của bạn thế nào?'
     });
 
@@ -313,6 +314,7 @@ document.getElementById('savePost').addEventListener('click', async () => {
         alert('Vui lòng chọn danh mục cho bài viết');
         return;
     }
+    const date = new Date()
 
     const postData = {
         title,
@@ -320,7 +322,7 @@ document.getElementById('savePost').addEventListener('click', async () => {
         category: selectedCategory,
         emotion: selectedEmotion,
         isFavor,
-        createdTime: Date.now(),
+        createdTime: date,
         authorId: user.uid,
         wordCount: wordCount
     };

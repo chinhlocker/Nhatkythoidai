@@ -27,6 +27,10 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth();
 const database = getDatabase(app);
 
+// Biến toàn cục để lưu trữ danh mục và cảm xúc tùy chỉnh
+let customCategories = [];
+let customEmotions = [];
+
 // Kiểm tra trạng thái xác thực
 auth.onAuthStateChanged((user) => {
     if (!user) {
@@ -34,6 +38,10 @@ auth.onAuthStateChanged((user) => {
         window.location.href = '/static/login.html';
         return;
     }
+    
+    // Tải danh mục và cảm xúc tùy chỉnh
+    loadCustomCategories(user.uid);
+    loadCustomEmotions(user.uid);
 
     // Lấy và hiển thị tên người dùng từ database
     const userRef = ref(database, `users/${user.uid}`);
@@ -75,7 +83,6 @@ document.getElementById('newPostBtn').addEventListener('click', () => {
 // Xử lý tìm kiếm và lọc
 document.getElementById('searchInput').addEventListener('input', filterPosts);
 document.getElementById('categoryFilter').addEventListener('change', filterPosts);
-document.getElementById('sortFilter').addEventListener('change', filterPosts);
 
 let allPosts = []; // Lưu trữ tất cả bài viết để tìm kiếm và lọc
 
@@ -104,7 +111,6 @@ function loadPosts(userId) {
 function filterPosts() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();
     const category = document.getElementById('categoryFilter').value;
-    const sortOrder = document.getElementById('sortFilter').value;
     
     let filteredPosts = [...allPosts];
     
@@ -121,14 +127,8 @@ function filterPosts() {
         filteredPosts = filteredPosts.filter(post => post.category === category);
     }
     
-    // Sắp xếp
-    filteredPosts.sort((a, b) => {
-        if (sortOrder === 'newest') {
-            return new Date(b.createdAt) - new Date(a.createdAt);
-        } else {
-            return new Date(a.createdAt) - new Date(b.createdAt);
-        }
-    });
+    // Luôn sắp xếp theo thời gian mới nhất
+    filteredPosts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
     
     displayPosts(filteredPosts);
 }
@@ -216,6 +216,30 @@ function getEmotionEmoji(emotionId) {
     }
     
     return emotions[emotionId] || '😐';
+}
+
+// Hàm tải danh mục tùy chỉnh
+function loadCustomCategories(userId) {
+    const categoriesRef = ref(database, `users/${userId}/categories`);
+    get(categoriesRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            customCategories = Object.values(snapshot.val());
+        }
+    }).catch((error) => {
+        console.error("Lỗi khi tải danh mục tùy chỉnh:", error);
+    });
+}
+
+// Hàm tải cảm xúc tùy chỉnh
+function loadCustomEmotions(userId) {
+    const emotionsRef = ref(database, `users/${userId}/emotions`);
+    get(emotionsRef).then((snapshot) => {
+        if (snapshot.exists()) {
+            customEmotions = Object.values(snapshot.val());
+        }
+    }).catch((error) => {
+        console.error("Lỗi khi tải cảm xúc tùy chỉnh:", error);
+    });
 }
 
 // Hàm chỉnh sửa bài viết
